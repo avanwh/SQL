@@ -1,0 +1,73 @@
+# In this SQL code, I created three tables with different, overlapping information about several celebrities and then asked queries to make more readable, 
+useful tables
+
+
+/* Create table about the people and what they do here */
+CREATE TABLE famous_people (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT, profession TEXT);
+
+#1. This table stores the names and professions of famous people
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Brad", "Pitt", "Actor");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Amy", "Adams", "Actor");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Ryan", "Reynolds", "Actor");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Blake", "Lively", "Actor");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Gwen", "Stefani", "Singer");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Blake", "Shelton", "Singer");
+INSERT INTO famous_people (firstname, lastname, profession)
+    VALUES ("Florence", "Welch", "Singer");
+
+#2. This table stores information about the birth dates of the famous people in the last table
+CREATE TABLE famous_birthdays (id INTEGER PRIMARY KEY, people_id INTEGER, birthdate TEXT);
+
+INSERT INTO famous_birthdays (people_id,  birthdate)
+    VALUES (1, "12-18-1963");
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (2, "8-20-1974");
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (3, "10-23-1976");
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (4, "8-25-1987");
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (5, "10-3-1969");
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (6, "6-18-1976"); 
+INSERT INTO famous_birthdays (people_id, birthdate)
+    VALUES (7, "8-28-1986");
+    
+#3. This table stores information about any famous spouses that famous people have as well as those spouse's professions
+CREATE TABLE famous_spouses (id INTEGER PRIMARY KEY, people_id INTEGER, spouse_firstname TEXT, spouse_lastname TEXT, spouse_profession TEXT);
+
+INSERT INTO famous_spouses (people_id, spouse_firstname, spouse_lastname, spouse_profession)
+    VALUES (3, "Blake", "Lively", "Actor");
+INSERT INTO famous_spouses (people_id, spouse_firstname, spouse_lastname, spouse_profession)
+    VALUES (4, "Ryan", "Reynolds", "Actor");
+INSERT INTO famous_spouses (people_id, spouse_firstname, spouse_lastname, spouse_profession)
+    VALUES (5, "Blake", "Shelton", "Singer");
+INSERT INTO famous_spouses (people_id, spouse_firstname, spouse_lastname, spouse_profession)
+    VALUES (6, "Gwen", "Stefani", "Singer");
+
+
+
+#4. This query listed the names and birth dates of the famous people
+SELECT famous_people.firstname, famous_people.lastname, famous_birthdays.birthdate FROM famous_people
+    LEFT OUTER JOIN famous_birthdays
+    ON famous_people.id = famous_birthdays.people_id;
+    
+    
+#5. This query listed the names of famous people and their spouse's names    
+SELECT famous_people.firstname, famous_people.lastname, famous_spouses.spouse_firstname, famous_spouses.spouse_lastname FROM famous_people     LEFT OUTER JOIN famous_spouses
+    ON famous_people.id = famous_spouses.people_id;
+    
+#6. This query listed the names of famous people whose profession mathches their spouse's 
+SELECT famous_people.firstname, famous_people.lastname, famous_people.profession, famous_spouses.spouse_profession FROM famous_people 
+    LEFT OUTER JOIN famous_spouses
+        ON famous_people.id = famous_spouses.people_id
+WHERE famous_people.profession = famous_spouses.spouse_profession;
+
+    
+
