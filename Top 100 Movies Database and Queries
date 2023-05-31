@@ -1,0 +1,37 @@
+/* Source: https://gist.github.com/pamelafox/c705b02114ea3db0dff0 */
+
+#In this SQL code, I'm querying a database that's holding Nexflix data to answer questions about the data. 
+
+
+#1. How many top movies did each studio make?
+SELECT Studio, COUNT(*) from topmovies 
+GROUP BY Studio ORDER BY COUNT(*); 
+
+#2. What were the total worldwide, domestic, and overseas sales made by each studio?
+SELECT Studio, SUM(Worldwide) AS Total_Worldwide, SUM(Domestic) AS Total_Domestic, SUM(Overseas) AS Total_Overseas FROM topmovies
+GROUP BY Studio;
+
+#3. What decade was each movie on the list made during? 
+SELECT *, CASE 
+    WHEN Year < 1980 THEN "1970s"
+    WHEN Year < 1990 THEN "1980s"
+    WHEN Year < 2000 THEN "1990s"
+    WHEN Year < 2010 THEN "2000s"
+    WHEN Year < 2020 THEN "2010s" 
+    ELSE "2020s"
+    END AS Decade
+FROM topmovies;
+
+#4. How many movies were made in each decade represented? 
+SELECT COUNT(*), CASE WHEN Year < 1980 THEN "1970s"
+    WHEN Year < 1990 THEN "1980s"
+    WHEN Year < 2000 THEN "1990s"
+    WHEN Year < 2010 THEN "2000s"
+    WHEN Year < 2020 THEN "2010s" 
+    ELSE "2020s"
+    END AS Decade
+FROM topmovies
+GROUP BY Decade;
+
+#5. What was the average worldwide, domestic, and overseas sales for all the top 100 movies?
+SELECT AVG(Worldwide), AVG(Domestic), AVG(Overseas) FROM topmovies;
