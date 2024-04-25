@@ -1,0 +1,139 @@
+Using a free online database, I answered the following queries using SQL. For questions about the database, please email me. 
+
+
+
+# 1. Show Customers (their full names, customer ID, and country) who are not in the US. (Hint: != or <> can be used to say "is not equal to").
+
+SELECT FirstName, LastName, CustomerId, Country 
+FROM chinook.customers
+WHERE Country <> 'USA'
+;
+
+
+# 2. Show only the Customers from Brazil.
+
+SELECT * 
+FROM Chinook.customers
+WHERE Country = 'Brazil'
+;
+
+
+# 3. Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+
+SELECT customers.FirstName, customers.LastName, invoices.InvoiceId, invoices.InvoiceDate, invoices.BillingCountry 
+FROM Chinook.invoices
+LEFT JOIN Chinook.customers
+ON invoices.CustomerId = customers.CustomerId
+WHERE Country = 'Brazil'
+;
+
+# 4. Show the Employees who are Sales Agents.
+
+SELECT * 
+FROM Chinook.employees
+WHERE Title LIKE '%Sales%'
+;
+
+# 5. Find a unique/distinct list of billing countries from the Invoice table.
+
+SELECT DISTINCT BillingCountry 
+FROM Chinook.invoices
+;
+
+
+# 6. Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+
+SELECT invoices.InvoiceId, employees.LastName, employees.FirstName
+FROM Chinook.invoices
+LEFT JOIN Chinook.customers
+ON invoices.CustomerId = customers.CustomerId
+LEFT JOIN Chinook.employees
+ON customers.SupportRepId = employees.EmployeeId
+; 
+
+# 7. Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+
+SELECT invoices.Total, customers.FirstName, customers.LastName, employees.FirstName, employees.LastName
+FROM Chinook.invoices
+LEFT JOIN Chinook.customers
+ON invoices.CustomerId = customers.CustomerId
+LEFT JOIN Chinook.employees
+ON customers.SupportRepId = employees.EmployeeId
+; 
+
+# 8. How many Invoices were there in 2009?
+
+SELECT COUNT(*)
+FROM Chinook.invoices
+WHERE InvoiceDate LIKE '%2009%'
+;
+
+# 9. What are the total sales for 2009?
+
+SELECT SUM(Total)
+FROM Chinook.invoices
+WHERE InvoiceDate LIKE '%2009%'
+;
+
+
+# 10. Write a query that includes the purchased track name with each invoice line ID.
+
+SELECT name, InvoiceLineId
+FROM Chinook.tracks 
+LEFT JOIN Chinook.invoice_items 
+ON tracks.TrackId = invoice_items.InvoiceId
+;
+
+# 11. Write a query that includes the purchased track name AND artist name with each invoice line ID.
+
+SELECT tracks.name, artists.name, invoice_items.InvoiceLineId
+FROM Chinook.tracks
+LEFT JOIN Chinook.albums
+ON tracks.AlbumId = albums.AlbumId
+LEFT JOIN Chinook.artists
+ON albums.ArtistId = artists.ArtistId
+LEFT JOIN Chinook.invoice_items
+ON tracks.TrackId = invoice_items.TrackId
+;
+
+
+# 12. Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+
+SELECT t.Name AS 'Track Name', a.Title AS 'Album Title', m.Name AS 'Media Type', g.Name AS 'Genre'
+FROM chinook.tracks t
+JOIN chinook.Albums a 
+on a.AlbumId = t.AlbumId
+JOIN chinook.Media_Types m
+on m.MediaTypeId = t.MediaTypeId
+JOIN chinook.Genres g
+on g.GenreId = t.GenreId
+;
+
+# 13. Show the total sales made by each sales agent.
+
+SELECT SUM(invoices.Total) as 'Total Sales', employees.FirstName, employees.LastName
+FROM Chinook.employees
+JOIN Chinook.Customers
+ON customers.SupportRepId = employees.EmployeeId
+JOIN Chinook.invoices
+ON customers.CustomerId = invoices.CustomerId
+WHERE employees.Title = 'Sales Support Agent'
+GROUP BY employees.FirstName
+;
+
+# 14. Which sales agent made the most dollars in sales in 2009?
+
+SELECT SUM(invoices.Total) as 'Total Sales', employees.FirstName, employees.LastName
+FROM Chinook.employees
+JOIN Chinook.Customers
+ON customers.SupportRepId = employees.EmployeeId
+JOIN Chinook.invoices
+ON customers.CustomerId = invoices.CustomerId
+WHERE employees.Title = 'Sales Support Agent'
+AND invoices.InvoiceDate LIKE '%2009%'
+GROUP BY employees.FirstName 
+ORDER BY SUM(invoices.Total) DESC
+LIMIT 1
+;
+
